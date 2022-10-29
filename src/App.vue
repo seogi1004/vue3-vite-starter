@@ -1,18 +1,15 @@
 <template>
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+    <equalizer-chart></equalizer-chart>
+    <hr />
+    <scatter-chart msg="Hello Vue 3 + TypeScript + Vite"></scatter-chart>
 </template>
 
 <script lang="ts" setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import ScatterChart from './components/ScatterChart.vue';
+import EqualizerChart from './components/EqualizerChart.vue';
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

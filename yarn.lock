@@ -417,6 +417,18 @@ is-core-module@^2.9.0:
   dependencies:
     has "^1.0.3"
 
+juijs-chart@^2.6.12:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/juijs-chart/-/juijs-chart-2.6.12.tgz#987e370006d11cddb55d5b3e841910088cff06ae"
+  integrity sha512-AH+pzE/jpHIsHEdtGaRPn3Lh2WrNfnbGxKVyX93m9rthciJh46Dam1Fk7TUeDRR/6FVPn7fT/3CF5XosF6RbUA==
+  dependencies:
+    juijs-graph "1.1.4"
+
+juijs-graph@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/juijs-graph/-/juijs-graph-1.1.4.tgz#36931cc0f79c406a08e5db9f1ff81de7bc4f26eb"
+  integrity sha512-97LnBbwTrqbKBi2nS4nfvsHXKAArwcVxmGHkoXx9X7GT1uGXdRONmdLhjYc87UkWWQr5p91sSWlwA0qXvQg7/Q==
+
 magic-string@^0.25.7:
   version "0.25.7"
   resolved "https://registry.npmjs.org/magic-string/-/magic-string-0.25.7.tgz"
