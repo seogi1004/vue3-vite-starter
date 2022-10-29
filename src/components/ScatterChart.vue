@@ -70,9 +70,17 @@ const updateAxisData = () => {
 
 onMounted(() => {
     if (!canvas.value) return;
+    const canvasWidth = props.width;
+    const canvasHeight = props.height - BOTTOM_HEIGHT;
+
+    if (devicePixelRatio > 1) {
+        canvas.value.width = canvasWidth * devicePixelRatio;
+        canvas.value.height = canvasHeight * devicePixelRatio;
+        canvas.value.style.width = `${canvasWidth}px`;
+        canvas.value.style.height = `${canvasHeight}px`;
+    }
 
     const offscreen = canvas.value.transferControlToOffscreen();
-
     const worker = new Worker(
         new URL('../workers/ScatterChart.ts', import.meta.url),
         { type: 'module' }
@@ -82,8 +90,9 @@ onMounted(() => {
     worker.postMessage(
         {
             canvas: offscreen,
-            width: props.width,
-            height: props.height - BOTTOM_HEIGHT,
+            rate: devicePixelRatio,
+            width: canvasWidth,
+            height: canvasHeight,
             domain: scaleFunc.domain(),
         },
         [offscreen]
@@ -91,14 +100,6 @@ onMounted(() => {
 
     setInterval(() => {
         updateAxisData();
-        worker.postMessage(
-            {
-                width: props.width,
-                height: props.height - BOTTOM_HEIGHT,
-                domain: scaleFunc.domain(),
-            },
-            []
-        );
     }, 1000);
 });
 </script>
@@ -113,6 +114,7 @@ onMounted(() => {
     width: 100%;
     height: calc(100% - 50px);
     border: 1px solid #dcdcdc;
+    border-top-width: 0;
 }
 
 .timeline > .container > .line {
@@ -132,8 +134,8 @@ onMounted(() => {
 
 .timeline > .text {
     position: absolute;
-    bottom: 32px;
+    bottom: 30px;
     color: #1c1c1c;
-    font-size: 11px;
+    font-size: 12px;
 }
 </style>

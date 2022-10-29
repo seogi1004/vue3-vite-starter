@@ -7,10 +7,9 @@ import { onMounted, ref } from 'vue';
 import { API_URL, API_TOKEN } from '../constants';
 import graph from 'juijs-chart';
 import CanvasEqualizerBrush from 'juijs-chart/src/brush/canvas/equalizercolumn';
-import LegendWidget from 'juijs-chart/src/widget/legend';
 import ClassicTheme from 'juijs-chart/src/theme/classic';
 
-graph.use([ClassicTheme, CanvasEqualizerBrush, LegendWidget]);
+graph.use([ClassicTheme, CanvasEqualizerBrush]);
 
 const animation = graph.include('chart.animation');
 const chart = ref();
@@ -29,9 +28,9 @@ onMounted(() => {
         width: props.width,
         height: props.height,
         padding: {
-            top: 8,
-            left: 20,
-            right: 20,
+            top: 0,
+            left: 0,
+            right: 0,
         },
         axis: [
             {
@@ -46,6 +45,7 @@ onMounted(() => {
                     },
                     step: 5,
                     line: false,
+                    hide: true,
                 },
             },
         ],
@@ -55,17 +55,6 @@ onMounted(() => {
                 target: ['default', 'normal', 'warning', 'fatal'],
                 errorText: 'Stopped',
                 unit: 10,
-            },
-        ],
-        widget: [
-            {
-                type: 'legend',
-                format: function (key) {
-                    if (key === 'normal') return '2-4';
-                    else if (key === 'warning') return '4-10';
-                    else if (key === 'fatal') return '10-';
-                    return '0-2';
-                },
             },
         ],
         interval: 100,
