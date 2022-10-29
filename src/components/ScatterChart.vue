@@ -31,6 +31,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { scaleTime } from 'd3-scale';
+import fetchAndDraw from '../workers/FetchAndDraw';
 
 const BOTTOM_HEIGHT = 50;
 
@@ -80,23 +81,39 @@ onMounted(() => {
         canvas.value.style.height = `${canvasHeight}px`;
     }
 
-    const offscreen = canvas.value.transferControlToOffscreen();
-    const worker = new Worker(
-        new URL('../workers/ScatterChart.ts', import.meta.url),
-        { type: 'module' }
-    );
-
+    // X축 스케일 업데이트
     updateAxisData();
-    worker.postMessage(
-        {
-            canvas: offscreen,
-            rate: devicePixelRatio,
-            width: canvasWidth,
-            height: canvasHeight,
-            domain: scaleFunc.domain(),
-        },
-        [offscreen]
-    );
+
+    // offscreen canvas 지원 여부에 따른 처리
+    if (canvas.value.transferControlToOffscreen !== undefined) {
+        const offscreen = canvas.value.transferControlToOffscreen();
+        const worker = new Worker(
+            new URL('../workers/ScatterChart.ts', import.meta.url),
+            { type: 'module' }
+        );
+
+        worker.postMessage(
+            {
+                canvas: offscreen,
+                rate: devicePixelRatio,
+                width: canvasWidth,
+                height: canvasHeight,
+                domain: scaleFunc.domain(),
+            },
+            [offscreen]
+        );
+    } else {
+        const context = canvas.value.getContext(
+            '2d'
+        ) as CanvasRenderingContext2D;
+        fetchAndDraw(
+            context,
+            devicePixelRatio,
+            canvasWidth,
+            canvasHeight,
+            scaleFunc.domain() as [Date, Date]
+        );
+    }
 
     setInterval(() => {
         updateAxisData();
