@@ -8,11 +8,21 @@
                     :height="CHART_HEIGHT"
                 ></equalizer-chart>
             </div>
+
             <div class="chart">
-                <div class="title">Offscreen Canvas</div>
+                <div class="title">Offscreen Canvas (Sync)</div>
                 <scatter-chart
                     :width="CHART_WIDTH"
                     :height="CHART_HEIGHT"
+                    :use-worker="false"
+                ></scatter-chart>
+            </div>
+            <div class="chart">
+                <div class="title">Offscreen Canvas (Async)</div>
+                <scatter-chart
+                    :width="CHART_WIDTH"
+                    :height="CHART_HEIGHT"
+                    :use-worker="true"
                 ></scatter-chart>
             </div>
         </div>
@@ -36,7 +46,7 @@ import { ref, computed } from 'vue';
 import ScatterChart from './components/ScatterChart.vue';
 import EqualizerChart from './components/EqualizerChart.vue';
 
-const CHART_WIDTH = 500;
+const CHART_WIDTH = 400;
 const CHART_HEIGHT = 300;
 
 const paddingTop = computed(() => {

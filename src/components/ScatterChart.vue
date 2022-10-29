@@ -31,13 +31,14 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { scaleTime } from 'd3-scale';
-import fetchAndDraw from '../workers/FetchAndDraw';
+import fetchAndRender from '../actions/ScatterChart';
 
 const BOTTOM_HEIGHT = 50;
 
 const props = defineProps<{
     width: number;
     height: number;
+    useWorker: boolean;
 }>();
 
 const canvas = ref<HTMLCanvasElement>();
@@ -71,6 +72,7 @@ const updateAxisData = () => {
 
 onMounted(() => {
     if (!canvas.value) return;
+
     const canvasWidth = props.width;
     const canvasHeight = props.height - BOTTOM_HEIGHT;
 
@@ -86,27 +88,53 @@ onMounted(() => {
 
     // offscreen canvas 지원 여부에 따른 처리
     if (canvas.value.transferControlToOffscreen !== undefined) {
-        const offscreen = canvas.value.transferControlToOffscreen();
-        const worker = new Worker(
-            new URL('../workers/ScatterChart.ts', import.meta.url),
-            { type: 'module' }
-        );
+        if (props.useWorker) {
+            const offscreen = canvas.value.transferControlToOffscreen();
+            const worker = new Worker(
+                new URL('../workers/ScatterChart.ts', import.meta.url),
+                { type: 'module' }
+            );
 
-        worker.postMessage(
-            {
-                canvas: offscreen,
-                rate: devicePixelRatio,
-                width: canvasWidth,
-                height: canvasHeight,
-                domain: scaleFunc.domain(),
-            },
-            [offscreen]
-        );
+            worker.postMessage(
+                {
+                    canvas: offscreen,
+                    rate: devicePixelRatio,
+                    width: canvasWidth,
+                    height: canvasHeight,
+                    domain: scaleFunc.domain(),
+                },
+                [offscreen]
+            );
+        } else {
+            const offscreen = new OffscreenCanvas(
+                canvasWidth * devicePixelRatio,
+                canvasHeight * devicePixelRatio
+            );
+            const context = offscreen.getContext(
+                '2d'
+            ) as OffscreenCanvasRenderingContext2D;
+
+            fetchAndRender(
+                context,
+                devicePixelRatio,
+                canvasWidth,
+                canvasHeight,
+                scaleFunc.domain() as [Date, Date],
+                () => {
+                    const bitmap = offscreen.transferToImageBitmap();
+                    if (canvas.value) {
+                        const ctx = canvas.value.getContext('bitmaprenderer');
+                        if (ctx) ctx.transferFromImageBitmap(bitmap);
+                    }
+                }
+            );
+        }
     } else {
         const context = canvas.value.getContext(
             '2d'
         ) as CanvasRenderingContext2D;
-        fetchAndDraw(
+
+        fetchAndRender(
             context,
             devicePixelRatio,
             canvasWidth,

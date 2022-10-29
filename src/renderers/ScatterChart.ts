@@ -9,7 +9,7 @@ function getColor(time: number) {
 }
 
 export default function (
-    ctx: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     rate: number,
     width: number,
     height: number,
