@@ -24,3 +24,24 @@ export interface TransactionData {
     errorType: string;
     applicationName: string;
 }
+
+export interface RealtimeData {
+    domainId: number;
+    domainName: string;
+    ipAddress: string;
+    activeService: number;
+    activeServiceRangeCount0: number;
+    activeServiceRangeCount1: number;
+    activeServiceRangeCount2: number;
+    activeServiceRangeCount3: number;
+    activeUser: number;
+    tps: number;
+    responseTime: number;
+    concurrentUser: number;
+    rejectRate: number;
+    hitHour: number;
+    visitHour: number;
+    hitDay: number;
+    visitDay: number;
+    port: number;
+}
